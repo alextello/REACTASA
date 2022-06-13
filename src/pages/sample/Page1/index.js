@@ -1,122 +1,56 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import AppCard from '../../../@crema/core/AppCard';
-import {
-  Modal,
-  Button,
-  Col,
-  Input,
-  InputNumber,
-  Form,
-  Select,
-  Popconfirm,
-} from 'antd';
+import {Button, Col, Popconfirm} from 'antd';
 import {AppRowContainer} from '../../../@crema';
 import Deals from './Deals';
-import Barcode from 'react-barcode';
-import ShortUniqueId from 'short-unique-id';
-import TextArea from 'antd/es/input/TextArea';
 import {ArrowsAltOutlined, CloseOutlined} from '@ant-design/icons';
-import useAsyncState from '../../../@crema/utility/useAsyncState';
+import ModalAvaluos from './ModalAvaluos';
 
 const Page1 = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalUserVisible, setIsModalUserVisible] = useState(false);
-  const [barcode, setBarcode] = useAsyncState('');
   const [items, setItems] = useState([]);
-  const [currentItem, setCurrentItem] = useState({});
-  let id;
+  const [item, setItem] = useState({});
+  const [barcode, setBarcode] = useState();
 
   useEffect(() => {
-    console.log('entrando useefect')
-    setCurrentItem({...form.getFieldsValue()});
-  }, [items]);
-
-  const [form] = Form.useForm();
-
-  const showModal = async (e) => {
-    if (e && e.id) {
-      id = e.id;
-      await setCurrentItem(e);
-      form.setFieldsValue({...e});
-    }
-    generateBarCode();
-    setIsModalVisible(true);
-  };
-
-
-  const generateBarCode = async () => {
-    console.log('currentItem.id')
-    if (!(currentItem.id !== '' && currentItem.id !== null && currentItem.id !== undefined)){
-      console.log('entra if')
-      const uid = new ShortUniqueId({length: 7, dictionary: 'number'});
-      let code = uid();
-      code = `${new Date()
-        .getFullYear()
-        .toString()
-        .substring(2, 4)}P${new Date().getMonth()}${code}`;
-      const ncode = await setBarcode(code);
-      console.log(ncode);
+    if (item.id) {
+      setBarcode(item.id);
     } else {
-      console.log('entra else')
-      const ncode = await setBarcode(currentItem.id);
-      console.log(ncode);
+      setBarcode(null);
     }
-  };
+    console.log('editItem ' + JSON.stringify(item, null, 2));
+    console.log('barcode  ' + barcode);
+  }, [item]);
 
   const eliminarItem = (e) => {
     const newItems = items.filter((it) => it.id !== e.id);
     setItems(newItems);
   };
 
-  const save = async () => {
-    form.submit();
-    await onFormSubmit();
+  const showModal = () => {
+    console.log('show modal...');
+    setBarcode(null);
+    setIsModalVisible(true);
   };
-
-  const saveAndClose = async () => {
-    form.submit();
-    await onFormSubmit();
-    setIsModalVisible(false);
-  };
-
-
-  const onFormSubmit = useCallback(async () => {
-    try {
-      await form.validateFields();
-      const uid = new ShortUniqueId({length: 7, dictionary: 'number'});
-      let code = uid();
-      if (id) {
-        let tmpItems = [...items];
-        let tmpItemIndex = items.findIndex((it) => it.id === id);
-        if (tmpItems > 0) {
-          tmpItems[tmpItemIndex] = {...form.getFieldsValue(), id}
-        }
-        setItems([...tmpItems]);
-      } else {
-        setItems(items => [...items, {...form.getFieldsValue(), id: code}]);
-      }
-      id = null;
-    //  form.resetFields();
-    } catch (errors) {
-      // alert('NO VALIDO');
-      // console.log('errors')
-      // console.log(errors)
-      // Errors in the fields
-    }
-  }, [form]);
-
-  const editItem = async (e) => {
-    setCurrentItem({...e});
-    form.setFieldsValue({...e});
-    await showModal(e);
-  }
 
   const handleCancel = () => {
+    setItem({});
     setIsModalVisible(false);
   };
 
-  const handleUserCancel = () => {
-    setIsModalUserVisible(false);
+  const openEditItem = (item) => {
+    setItem({...item});
+    setBarcode(item.id);
+    setIsModalVisible(true);
+  };
+
+  const save = (data) => {
+    setItems((items) => [...items, {...data}]);
+  };
+
+  const saveAndClose = (data) => {
+    setItems((items) => [...items, {...data}]);
+    setIsModalVisible(false);
   };
 
   return (
@@ -127,193 +61,14 @@ const Page1 = () => {
             <Button type='primary' onClick={showModal}>
               Avaluo de prendas
             </Button>
-            <Modal
-              title={`Nuevo paquete - ${barcode}`}
-              visible={isModalVisible}
-              width={1000}
-              footer={[
-                <Button key="back" onClick={handleCancel}>
-                  Cancelar
-                </Button>,
-                <Button key="submit" type="primary" onClick={saveAndClose}>
-                  Guardar y cerrar
-                </Button>,
-                <Button
-                  key="link"
-                  type="primary"
-                  onClick={save}
-                >
-                  Guardar y agregar otro
-                </Button>,
-              ]}
-
-            >
-              <Form
-                form={form}
-                layout='horizontal'
-                >
-                <AppRowContainer justify={'center'}>
-                  <Col>
-                    <Barcode value={barcode}></Barcode>
-                  </Col>
-                </AppRowContainer>
-                <AppRowContainer>
-                  <Col span={24}></Col>
-                </AppRowContainer>
-                <AppRowContainer gutter={[16, 2]}>
-                  <Col span={24}>
-                    <Form.Item
-                      required
-                      label='Cantidad'
-                      name='cantidad'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Campo obligatorio',
-                        },
-                      ]}
-                    >
-                      <InputNumber min={1} />
-                    </Form.Item>
-                  </Col>
-                </AppRowContainer>
-                <AppRowContainer>
-                  <Col span={8}>
-                    <Form.Item
-                      name='montoRequerido'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Campo obligatorio',
-                        },
-                      ]}
-                      label='Monto requerido'
-                      tooltip='Valor que el cliente pide'
-                    >
-                      <InputNumber
-                        formatter={value => `Q${value}`}
-                        parser={value => value.replace('Q', '')}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Campo obligatorio',
-                        },
-                      ]}
-                      name='montoEstimado'
-                      label='Monto estimado'
-                      tooltip='Valor en el que se estima el articulo'>
-                      <InputNumber
-                        formatter={value => `Q${value}`}
-                        parser={value => value.replace('Q', '')}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Campo obligatorio',
-                        },
-                      ]}
-                      label='Monto ofrecido'
-                      name='montoOfrecido'
-                      tooltip='Valor ofrecido al cliente por el articulo'>
-                      <InputNumber
-                        formatter={value => `Q${value}`}
-                        parser={value => value.replace('Q', '')}
-                      />
-                    </Form.Item>
-                  </Col>
-                </AppRowContainer>
-                <AppRowContainer>
-                  <Col span={24}>
-                    <Form.Item
-                      label='Plazo'
-                      name='plazo'
-                      required
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Campo obligatorio',
-                        },
-                      ]}
-                    >
-                      <Select allowClear={true}>
-                        <Select.Option value='1 mes'>1 mes</Select.Option>
-                        <Select.Option value='2 mes'>2 mes</Select.Option>
-                        <Select.Option value='3 mes'>3 mes</Select.Option>
-                        <Select.Option value='6 mes'>6 mes</Select.Option>
-                        <Select.Option value='1 anio'>1 año</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                </AppRowContainer>
-                <AppRowContainer>
-                  <Col span={24}>
-                    <Form.Item
-                      label='Nombre del articulo'
-                      name='nombre'
-                      required
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Campo obligatorio',
-                        },
-                      ]}
-                    >
-                      <Input></Input>
-                    </Form.Item>
-                  </Col>
-                </AppRowContainer>
-                <AppRowContainer>
-                  <Col span={24}>
-                    <Form.Item
-                      label='Descripcion'
-                      required
-                      name='descripcion'
-                      tooltip='Descripcion del articulo'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Campo obligatorio',
-                        },
-                      ]}
-                    >
-                      <TextArea
-                        size='large'
-                        style={{width: '100%'}}
-                        allowClear={true}></TextArea>
-                    </Form.Item>
-                  </Col>
-                </AppRowContainer>
-                <AppRowContainer>
-                  <Col span={24}>
-                    <Form.Item
-                      label='Observaciones'
-                      tooltip='Detalles a resaltar del articulo'>
-                      <TextArea
-                        size='large'
-                        allowClear={true}
-                        style={{width: '100%'}}></TextArea>
-                    </Form.Item>
-                  </Col>
-                </AppRowContainer>
-              </Form>
-            </Modal>
           </AppCard>
         </Col>
       </AppRowContainer>
-      {items.length > 0  &&
+      {items.length > 0 && (
         <AppRowContainer>
           <Col span={24}>
             <AppCard title={'Articulos de paquete'}>
-              <AppRowContainer>
+              <AppRowContainer justify='space-around'>
                 {items.map((e, i) => {
                   return (
                     <Col key={i}>
@@ -324,7 +79,7 @@ const Page1 = () => {
                           <>
                             <Popconfirm
                               placement='topLeft'
-                              title='¿Seguro?'
+                              title='¿Esta seguro de remover este artículo?'
                               onConfirm={() => eliminarItem(e)}
                               okText='Sí'
                               cancelText='No'>
@@ -332,48 +87,53 @@ const Page1 = () => {
                                 <CloseOutlined />
                               </Button>
                             </Popconfirm>
-                            <Button className='close-btn' onClick={() => editItem(e)}>
+                            <Button
+                              className='close-btn'
+                              onClick={() => {
+                                openEditItem(e);
+                              }}>
                               <ArrowsAltOutlined />
                             </Button>
                           </>
-                        }
-                      />
+                        }>
+                        <AppRowContainer>
+                          <Col>
+                            <h5>Valor ofrecido:</h5>
+                          </Col>
+                          <Col>{`Q ${e.montoOfrecido}`}</Col>
+                        </AppRowContainer>
+                      </AppCard>
                     </Col>
                   );
                 })}
               </AppRowContainer>
+              <AppRowContainer justify={'end'}>
+                <Col>
+                  <h3>TOTAL OFRECIDO:</h3>
+                </Col>
+                <Col>
+                  <h2>
+                    {items.reduce((acc, it) => acc + it.montoOfrecido, 0)}
+                  </h2>
+                </Col>
+              </AppRowContainer>
             </AppCard>
           </Col>
         </AppRowContainer>
-      }
+      )}
       <AppRowContainer>
         <Col span={24}>
           <Deals></Deals>
         </Col>
       </AppRowContainer>
-      <Modal
-        title={`Registrar usuario`}
-        visible={isModalUserVisible}
-        onOk={save}
-        onCancel={handleUserCancel}>
-        <Form>
-          <Form.Item label={'Nombres'}>
-            <Input />
-          </Form.Item>
-          <Form.Item label={'Apellidos'}>
-            <Input />
-          </Form.Item>
-          <Form.Item label={'CUI'}>
-            <Input />
-          </Form.Item>
-          <Form.Item label={'Direccion'}>
-            <Input />
-          </Form.Item>
-          <Form.Item label={'Telefono'}>
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <ModalAvaluos
+        isModalVisible={isModalVisible}
+        handleCancel={handleCancel}
+        save={save}
+        saveAndClose={saveAndClose}
+        formData={item}
+        barcode={barcode}
+      />
     </>
   );
 };
