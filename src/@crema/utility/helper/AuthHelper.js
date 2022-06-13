@@ -18,7 +18,7 @@ export const getUserFromFirebase = (user) => {
     return {
       id: 1,
       uid: user.uid,
-      displayName: user.displayName ? user.displayName : 'Usuario Aliazna',
+      displayName: user.displayName ? user.displayName : 'Usuario Alianza',
       // email: user.email,
       email: 'usuario@alianza.com',
       photoURL: user.photoURL ? user.photoURL : '/assets/images/avatar/A11.jpg',
@@ -31,7 +31,9 @@ export const getUserFromAWS = (user) => {
     return {
       id: 1,
       uid: user.username,
-      displayName: user.attributes.name ? user.attributes.name : 'Usuario Alianza',
+      displayName: user.attributes.name
+        ? user.attributes.name
+        : 'Usuario Alianza',
       // email: user.attributes.email,
       email: 'usuario@alianza.com',
       photoURL: user.photoURL,

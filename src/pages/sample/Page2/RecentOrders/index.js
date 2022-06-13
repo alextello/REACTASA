@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import {useIntl} from 'react-intl';
 
 const RecentOrders = ({recentOrders}) => {
-  recentOrders =  [
+  recentOrders = [
     {
       id: '#SK231',
       customer: 'Juan Mendez',

@@ -47,68 +47,68 @@ const Page3 = () => {
   };
 
   return (
-      <>
-        <AppPageMetadata title='Customers' />
-        <AppsContainer
-            title={messages['sidebar.ecommerce.customers']}
-            fullView
-            type='bottom'>
-          <AppsHeader key={'wrap'}>
-            <div className='customer-header'>
-              <div className='customer-header-input-view'>
-                <Input
-                    id='user-name'
-                    placeholder='Search'
-                    type='search'
-                    onChange={onSearchOrder}
-                />
-              </div>
-              <div className='customer-header-right'>
-                <Button type='primary' onClick={showModal}>
-                  Registrar cliente
-                </Button>
-
-                <AppsPagination
-                    className='customer-header-pagination'
-                    pageSize={10}
-                    count={customerCount}
-                    page={page}
-                    onChange={onChange}
-                />
-              </div>
+    <>
+      <AppPageMetadata title='Customers' />
+      <AppsContainer
+        title={messages['sidebar.ecommerce.customers']}
+        fullView
+        type='bottom'>
+        <AppsHeader key={'wrap'}>
+          <div className='customer-header'>
+            <div className='customer-header-input-view'>
+              <Input
+                id='user-name'
+                placeholder='Search'
+                type='search'
+                onChange={onSearchOrder}
+              />
             </div>
-          </AppsHeader>
+            <div className='customer-header-right'>
+              <Button type='primary' onClick={showModal}>
+                Registrar cliente
+              </Button>
 
-          <AppsContent
-              key={'wrap1'}
-              style={{
-                paddingTop: 10,
-                paddingBottom: 10,
-              }}>
-            <CustomerTable loading={loading} customers={customers} />
-          </AppsContent>
+              <AppsPagination
+                className='customer-header-pagination'
+                pageSize={10}
+                count={customerCount}
+                page={page}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+        </AppsHeader>
 
-          <AppsPagination
-              key={'wrap2'}
-              className='customer-footer-pagination'
-              pageSize={10}
-              count={customerCount}
-              page={page}
-              onChange={onChange}
-          />
-        </AppsContainer>
+        <AppsContent
+          key={'wrap1'}
+          style={{
+            paddingTop: 10,
+            paddingBottom: 10,
+          }}>
+          <CustomerTable loading={loading} customers={customers} />
+        </AppsContent>
 
-        <Modal
-            title={messages['ecommerce.addCustomer']}
-            visible={isModalVisible}
-            onOk={handleOk}
-            footer={false}
-            onCancel={handleCancel}>
-          <EditCustomer />
-        </Modal>
+        <AppsPagination
+          key={'wrap2'}
+          className='customer-footer-pagination'
+          pageSize={10}
+          count={customerCount}
+          page={page}
+          onChange={onChange}
+        />
+      </AppsContainer>
 
-        <AppInfoView />
-      </>
+      <Modal
+        title={messages['ecommerce.addCustomer']}
+        visible={isModalVisible}
+        onOk={handleOk}
+        footer={false}
+        onCancel={handleCancel}>
+        <EditCustomer />
+      </Modal>
+
+      <AppInfoView />
+    </>
   );
 };
 

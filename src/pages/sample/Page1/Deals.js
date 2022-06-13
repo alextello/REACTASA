@@ -9,7 +9,6 @@ import AppSelect from '../../../@crema/core/AppSelect';
 import './index.style.less';
 
 const Deals = () => {
-
   const crmData = {
     dealsTableData: [
       {
@@ -376,17 +375,16 @@ const Deals = () => {
 
   const [tableData, setTableData] = useState(crmData.dealsTableData);
 
-
   const handleChange = (value) => {
     if (value === messages['dashboard.allDeals.demo']) {
       setTableData(crmData.dealsTableData);
     } else if (value === messages['todo.completed.demo']) {
       setTableData(
-          crmData.dealsTableData.filter((data) => data.progress === 'Completado'),
+        crmData.dealsTableData.filter((data) => data.progress === 'Completado'),
       );
     } else {
       setTableData(
-          crmData.dealsTableData.filter((data) => data.progress === 'Pendiente'),
+        crmData.dealsTableData.filter((data) => data.progress === 'Pendiente'),
       );
     }
   };

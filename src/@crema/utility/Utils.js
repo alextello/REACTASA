@@ -139,7 +139,9 @@ export const getUserFromAWS = (user) => {
     return {
       id: 1,
       uid: user.username,
-      displayName: user.attributes.name ? user.attributes.name : 'Usuario Alianza',
+      displayName: user.attributes.name
+        ? user.attributes.name
+        : 'Usuario Alianza',
       email: 'usuario@alianza.com',
       // email: user.attributes.email,
       photoURL: user.photoURL,

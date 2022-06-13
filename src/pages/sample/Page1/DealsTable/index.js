@@ -61,7 +61,6 @@ const DealsTable = ({dealsTableData}) => {
     setIsModalVisible(true);
   };
 
-
   return (
     <>
       <AppTableContainer
@@ -71,11 +70,30 @@ const DealsTable = ({dealsTableData}) => {
         columns={columns}
         showModal={showModal}
       />
-      <Modal title="Detalles de paquete" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        title='Detalles de paquete'
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}>
         <QueueAnim delay={300} type={['right', 'left']} leaveReverse>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A architecto consequuntur culpa cupiditate deleniti ducimus ea et iure nihil odio officia, optio perspiciatis quas quod vero. Accusamus doloremque esse ex.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A architecto consequuntur culpa cupiditate deleniti ducimus ea et iure nihil odio officia, optio perspiciatis quas quod vero. Accusamus doloremque esse ex.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A architecto consequuntur culpa cupiditate deleniti ducimus ea et iure nihil odio officia, optio perspiciatis quas quod vero. Accusamus doloremque esse ex.</p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
+            architecto consequuntur culpa cupiditate deleniti ducimus ea et iure
+            nihil odio officia, optio perspiciatis quas quod vero. Accusamus
+            doloremque esse ex.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
+            architecto consequuntur culpa cupiditate deleniti ducimus ea et iure
+            nihil odio officia, optio perspiciatis quas quod vero. Accusamus
+            doloremque esse ex.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
+            architecto consequuntur culpa cupiditate deleniti ducimus ea et iure
+            nihil odio officia, optio perspiciatis quas quod vero. Accusamus
+            doloremque esse ex.
+          </p>
         </QueueAnim>
       </Modal>
     </>

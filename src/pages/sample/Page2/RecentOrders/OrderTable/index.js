@@ -36,7 +36,6 @@ const OrderTable = ({orderData}) => {
     setIsModalVisible(true);
   };
 
-
   const columns = [
     {
       title: 'ID',
@@ -102,9 +101,24 @@ const OrderTable = ({orderData}) => {
         onOk={handleOk}
         onCancel={handleCancel}>
         <QueueAnim delay={300} type={['right', 'left']} leaveReverse>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A architecto consequuntur culpa cupiditate deleniti ducimus ea et iure nihil odio officia, optio perspiciatis quas quod vero. Accusamus doloremque esse ex.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A architecto consequuntur culpa cupiditate deleniti ducimus ea et iure nihil odio officia, optio perspiciatis quas quod vero. Accusamus doloremque esse ex.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A architecto consequuntur culpa cupiditate deleniti ducimus ea et iure nihil odio officia, optio perspiciatis quas quod vero. Accusamus doloremque esse ex.</p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
+            architecto consequuntur culpa cupiditate deleniti ducimus ea et iure
+            nihil odio officia, optio perspiciatis quas quod vero. Accusamus
+            doloremque esse ex.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
+            architecto consequuntur culpa cupiditate deleniti ducimus ea et iure
+            nihil odio officia, optio perspiciatis quas quod vero. Accusamus
+            doloremque esse ex.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
+            architecto consequuntur culpa cupiditate deleniti ducimus ea et iure
+            nihil odio officia, optio perspiciatis quas quod vero. Accusamus
+            doloremque esse ex.
+          </p>
         </QueueAnim>
       </Modal>
     </>
