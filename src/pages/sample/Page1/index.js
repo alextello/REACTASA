@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import AppCard from '../../../@crema/core/AppCard';
-import {Button, Col, Modal, Popconfirm, Space, Upload} from 'antd';
+import {Button, Col, Modal, Popconfirm, Upload} from 'antd';
 import {AppRowContainer} from '../../../@crema';
 import Deals from './Deals';
 import {
@@ -20,6 +20,7 @@ const Page1 = () => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
+  let formData = new FormData();
 
   useEffect(() => {
     if (item.id) {
@@ -27,12 +28,14 @@ const Page1 = () => {
     } else {
       setBarcode(null);
     }
-    console.log('editItem ' + JSON.stringify(item, null, 2));
-    console.log('barcode  ' + barcode);
   }, [item]);
 
   useEffect(() => {
     console.log(JSON.stringify(files, null, 2));
+    files.forEach((file) => {
+      formData.append('files[]', file.originFileObj);
+    });
+    console.log(formData);
   }, [files]);
 
   const handlePreview = async (file) => {
@@ -62,12 +65,12 @@ const Page1 = () => {
   };
 
   const showModal = () => {
-    console.log('show modal...');
     setBarcode(null);
     setIsModalVisible(true);
   };
 
   const handleCancel = () => {
+    setBarcode(null);
     setItem({});
     setIsModalVisible(false);
   };
@@ -79,12 +82,31 @@ const Page1 = () => {
   };
 
   const save = (data) => {
+    setBarcode(null);
     setItems((items) => [...items, {...data}]);
   };
 
   const saveAndClose = (data) => {
+    setBarcode(null);
     setItems((items) => [...items, {...data}]);
     setIsModalVisible(false);
+  };
+
+  const onRemoveHandler = (deletedFile) => {
+    if (files.length > 0) {
+      setFiles((files) => {
+        const index = files.indexOf(deletedFile);
+        const newFiles = files.slice();
+        newFiles.splice(index, 1);
+        return [...newFiles];
+      });
+    }
+  };
+
+  const beforeUploadHandler = (newFile, item) => {
+    newFile.id = item.id;
+    setFiles((files) => [...files, {...newFile}]);
+    return false;
   };
 
   return (
@@ -102,43 +124,19 @@ const Page1 = () => {
         <AppRowContainer>
           <Col span={24}>
             <AppCard title={'Articulos de paquete'}>
-              <AppRowContainer justify='space-around'>
+              <AppRowContainer>
                 {items.map((e, i) => {
                   return (
                     <Col key={i}>
                       <AppCard
-                        title={e.nombre}
+                        title={`${e.nombre} - ${e.id}`}
                         bordered={true}
-                        actions={[
-                          <Space
-                            direction='vertical'
-                            style={{width: '100%'}}
-                            size='large'
-                            key='fotos'>
-                            <Upload
-                              onPreview={handlePreview}
-                              beforeUpload={(newFile) => {
-                                setFiles((files) => [...files, newFile]);
-                                return false;
-                              }}
-                              onRemove={(deletedFile) => {
-                                setFiles((files) => {
-                                  const index = files.indexOf(deletedFile);
-                                  const newFiles = files.slice();
-                                  newFiles.splice(index, 1);
-                                  return {
-                                    ...newFiles,
-                                  };
-                                });
-                              }}
-                              // action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                              listType='picture-card'
-                              maxCount={10}
-                              multiple>
-                              <Button icon={<CameraOutlined />}></Button>
-                            </Upload>
-                          </Space>,
-                        ]}
+                        actions={
+                          [
+                            // <Space direction='vertical' size='large' key='fotos'>
+                            // </Space>,
+                          ]
+                        }
                         extra={
                           <>
                             <Popconfirm
@@ -164,8 +162,23 @@ const Page1 = () => {
                           <Col>
                             <h5>Valor ofrecido:</h5>
                           </Col>
-                          <Col>{`Q ${e.montoOfrecido}`}</Col>
+                          <Col>{`Q ${e.montoConcedido}`}</Col>
                         </AppRowContainer>
+                        <Upload
+                          key='fotos'
+                          onPreview={handlePreview}
+                          beforeUpload={(newFile) => {
+                            return beforeUploadHandler(newFile, e);
+                          }}
+                          onRemove={(deletedFile) => {
+                            return onRemoveHandler(deletedFile);
+                          }}
+                          // action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                          listType='picture-card'
+                          maxCount={10}
+                          multiple>
+                          <Button icon={<CameraOutlined />}></Button>
+                        </Upload>
                       </AppCard>
                     </Col>
                   );
@@ -177,7 +190,7 @@ const Page1 = () => {
                 </Col>
                 <Col>
                   <h2>
-                    {items.reduce((acc, it) => acc + it.montoOfrecido, 0)}
+                    {items.reduce((acc, it) => acc + it.montoConcedido, 0)}
                   </h2>
                 </Col>
               </AppRowContainer>

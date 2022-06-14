@@ -1,4 +1,4 @@
-import {Button, Col, Form, Input, InputNumber, Modal, Select} from 'antd';
+import {Button, Col, Form, Input, InputNumber, Modal} from 'antd';
 import {AppRowContainer} from '../../../@crema';
 import TextArea from 'antd/es/input/TextArea';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -16,6 +16,7 @@ const ModalAvaluos = ({
 }) => {
   const [form] = Form.useForm();
   const [barcodeState, setBarcodeState] = useState();
+  // const [montoEstimado, setMontoEstimado] = useState('');
 
   useEffect(() => {
     if (Object.keys(formData).length > 0) {
@@ -25,24 +26,37 @@ const ModalAvaluos = ({
     }
   }, [formData]);
 
+  // useEffect(() => {}, [montoEstimado]);
+
+  const generateBarcode = () => {
+    const ui = new ShortUniqueId({length: 10});
+    return ui();
+  };
+
   useEffect(() => {
-    console.log('/*/*/  barcode');
-    console.log(barcode);
     if (barcode === null || barcode === undefined) {
-      const ui = new ShortUniqueId({length: 10});
-      setBarcodeState(ui());
+      setBarcodeState(generateBarcode());
     } else {
       setBarcodeState(barcode);
     }
   }, [barcode]);
 
+  const onChangeMontoEstimado = (valorEstimado) => {
+    form.setFieldsValue({
+      montoConcedido: valorEstimado / 2,
+      montoVenta: valorEstimado * 0.8,
+    });
+  };
+
   const handleSubmit = async (cerrar = false) => {
     try {
       await onFormSubmit();
       if (cerrar) {
+        setBarcodeState(generateBarcode());
         saveAndClose({...form.getFieldsValue(), id: barcodeState});
         form.resetFields();
       } else {
+        setBarcodeState(generateBarcode());
         save({...form.getFieldsValue(), id: barcodeState});
         form.resetFields();
       }
@@ -61,6 +75,7 @@ const ModalAvaluos = ({
 
   return (
     <Modal
+      forceRender
       title={`Nuevo paquete - ${barcodeState}`}
       visible={isModalVisible}
       width={1000}
@@ -87,60 +102,46 @@ const ModalAvaluos = ({
         </Button>,
       ]}>
       <Form form={form} layout='horizontal'>
-        <AppRowContainer justify={'center'}>
-          <Col>
-            <Barcode value={barcodeState}></Barcode>
-          </Col>
-        </AppRowContainer>
+        {barcodeState && (
+          <AppRowContainer justify={'center'}>
+            <Col>
+              <Barcode value={barcodeState}></Barcode>
+            </Col>
+          </AppRowContainer>
+        )}
         <AppRowContainer>
           <Col span={24}></Col>
         </AppRowContainer>
-        <AppRowContainer gutter={[16, 2]}>
-          <Col span={24}>
-            <Form.Item
-              required
-              label='Cantidad'
-              name='cantidad'
-              rules={[
-                {
-                  required: true,
-                  message: 'Campo obligatorio',
-                },
-              ]}>
-              <InputNumber min={1} />
-            </Form.Item>
-          </Col>
-        </AppRowContainer>
+        {/*<AppRowContainer gutter={[16, 2]}>*/}
+        {/*  <Col span={24}>*/}
+        {/*    <Form.Item*/}
+        {/*      required*/}
+        {/*      label='Cantidad'*/}
+        {/*      name='cantidad'*/}
+        {/*      rules={[*/}
+        {/*        {*/}
+        {/*          required: true,*/}
+        {/*          message: 'Campo obligatorio',*/}
+        {/*        },*/}
+        {/*      ]}>*/}
+        {/*      <InputNumber min={1} />*/}
+        {/*    </Form.Item>*/}
+        {/*  </Col>*/}
+        {/*</AppRowContainer>*/}
         <AppRowContainer>
           <Col span={8}>
             <Form.Item
-              name='montoRequerido'
-              rules={[
-                {
-                  required: true,
-                  message: 'Campo obligatorio',
-                },
-              ]}
-              label='Monto requerido'
-              tooltip='Valor que el cliente pide'>
-              <InputNumber
-                formatter={(value) => `Q${value}`}
-                parser={(value) => value.replace('Q', '')}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item
-              rules={[
-                {
-                  required: true,
-                  message: 'Campo obligatorio',
-                },
-              ]}
               name='montoEstimado'
+              rules={[
+                {
+                  required: true,
+                  message: 'Campo obligatorio',
+                },
+              ]}
               label='Monto estimado'
-              tooltip='Valor en el que se estima el articulo'>
+              tooltip='Monto estimado por el valuador'>
               <InputNumber
+                onChange={(e) => onChangeMontoEstimado(e)}
                 formatter={(value) => `Q${value}`}
                 parser={(value) => value.replace('Q', '')}
               />
@@ -154,35 +155,32 @@ const ModalAvaluos = ({
                   message: 'Campo obligatorio',
                 },
               ]}
-              label='Monto ofrecido'
-              name='montoOfrecido'
-              tooltip='Valor ofrecido al cliente por el articulo'>
+              name='montoConcedido'
+              label='Monto concedido'
+              tooltip='Valor que se concede por el articulo'>
               <InputNumber
+                readOnly
                 formatter={(value) => `Q${value}`}
                 parser={(value) => value.replace('Q', '')}
               />
             </Form.Item>
           </Col>
-        </AppRowContainer>
-        <AppRowContainer>
-          <Col span={24}>
+          <Col span={8}>
             <Form.Item
-              label='Plazo'
-              name='plazo'
-              required
               rules={[
                 {
                   required: true,
                   message: 'Campo obligatorio',
                 },
-              ]}>
-              <Select allowClear={true}>
-                <Select.Option value='1 mes'>1 mes</Select.Option>
-                <Select.Option value='2 mes'>2 mes</Select.Option>
-                <Select.Option value='3 mes'>3 mes</Select.Option>
-                <Select.Option value='6 mes'>6 mes</Select.Option>
-                <Select.Option value='1 anio'>1 año</Select.Option>
-              </Select>
+              ]}
+              label='Monto de venta'
+              name='montoVenta'
+              tooltip='Valor estimado para ventas'>
+              <InputNumber
+                readOnly
+                formatter={(value) => `Q${value}`}
+                parser={(value) => value.replace('Q', '')}
+              />
             </Form.Item>
           </Col>
         </AppRowContainer>
@@ -225,6 +223,7 @@ const ModalAvaluos = ({
         <AppRowContainer>
           <Col span={24}>
             <Form.Item
+              name='observaciones'
               label='Observaciones'
               tooltip='Detalles a resaltar del articulo'>
               <TextArea
