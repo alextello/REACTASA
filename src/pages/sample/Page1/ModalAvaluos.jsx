@@ -61,6 +61,7 @@ const ModalAvaluos = ({
         form.resetFields();
       }
     } catch (e) {
+      console.log(e);
       alert('formulario no valido');
     }
   };

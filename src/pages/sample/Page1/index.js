@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import AppCard from '../../../@crema/core/AppCard';
-import {Button, Col, Modal, Popconfirm, Upload} from 'antd';
+import {Button, Col, Modal, Popconfirm, Row, Statistic, Upload} from 'antd';
 import {AppRowContainer} from '../../../@crema';
 import Deals from './Deals';
 import {
@@ -9,6 +9,7 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 import ModalAvaluos from './ModalAvaluos';
+import {Text} from 'recharts';
 
 const Page1 = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -20,6 +21,7 @@ const Page1 = () => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
+  const [montoTotal, setMontoTotal] = useState('');
   let formData = new FormData();
 
   useEffect(() => {
@@ -29,6 +31,10 @@ const Page1 = () => {
       setBarcode(null);
     }
   }, [item]);
+
+  useEffect(() => {
+    setMontoTotal(items.reduce((acc, it) => acc + it.montoConcedido, 0));
+  }, [items]);
 
   useEffect(() => {
     console.log(JSON.stringify(files, null, 2));
@@ -83,13 +89,27 @@ const Page1 = () => {
 
   const save = (data) => {
     setBarcode(null);
-    setItems((items) => [...items, {...data}]);
+    handleSave(data);
   };
 
   const saveAndClose = (data) => {
     setBarcode(null);
-    setItems((items) => [...items, {...data}]);
     setIsModalVisible(false);
+    handleSave(data);
+  };
+
+  const handleSave = (data) => {
+    console.log('EN HANDLE SAVE');
+    const indexUpdatedItem = items.indexOf((it) => it.id === data.id);
+    console.log(indexUpdatedItem);
+    if (indexUpdatedItem >= 0) {
+      let newItems = [...items];
+      newItems[indexUpdatedItem] = {...data};
+      setItems([...newItems]);
+    } else {
+      console.log('else handle save');
+      setItems((items) => [...items, {...data}]);
+    }
   };
 
   const onRemoveHandler = (deletedFile) => {
@@ -124,6 +144,37 @@ const Page1 = () => {
         <AppRowContainer>
           <Col span={24}>
             <AppCard title={'Articulos de paquete'}>
+              <Text strong>Proyección de pagos: </Text>
+              <Row gutter={16}>
+                <Col span={6}>
+                  <Statistic
+                    title='Semana 1'
+                    value={Math.round(montoTotal * 1.025).toFixed(2)}
+                    prefix={'Q '}
+                  />
+                </Col>
+                <Col span={6}>
+                  <Statistic
+                    title='Semana 2'
+                    value={Math.round(montoTotal * 1.05).toFixed(2)}
+                    prefix={'Q '}
+                  />
+                </Col>
+                <Col span={6}>
+                  <Statistic
+                    title='Semana 3'
+                    value={Math.round(montoTotal * 1.075).toFixed(2)}
+                    prefix={'Q '}
+                  />
+                </Col>
+                <Col span={6}>
+                  <Statistic
+                    title='Semana 4'
+                    value={Math.round(montoTotal * 1.1).toFixed(2)}
+                    prefix={'Q '}
+                  />
+                </Col>
+              </Row>
               <AppRowContainer>
                 {items.map((e, i) => {
                   return (
