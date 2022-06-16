@@ -1,6 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import AppCard from '../../../@crema/core/AppCard';
-import {Button, Col, Modal, Popconfirm, Row, Statistic, Upload} from 'antd';
+import {
+  Button,
+  Col,
+  Descriptions,
+  Modal,
+  Popconfirm,
+  Row,
+  Statistic,
+  Upload,
+} from 'antd';
 import {AppRowContainer} from '../../../@crema';
 import Deals from './Deals';
 import {
@@ -10,10 +19,11 @@ import {
 } from '@ant-design/icons';
 import ModalAvaluos from './ModalAvaluos';
 import {Text} from 'recharts';
+import ModalContrato from './ModalContrato';
 
 const Page1 = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [isModalFotosVisible, setIsModalFotosVisible] = useState(false);
+  const [isModalContratoVisible, setIsModalContratoVisible] = useState(false);
   const [items, setItems] = useState([]);
   const [item, setItem] = useState({});
   const [barcode, setBarcode] = useState();
@@ -37,7 +47,6 @@ const Page1 = () => {
   }, [items]);
 
   useEffect(() => {
-    console.log(JSON.stringify(files, null, 2));
     files.forEach((file) => {
       formData.append('files[]', file.originFileObj);
     });
@@ -55,6 +64,13 @@ const Page1 = () => {
     );
   };
 
+  const handleCancelContrato = () => {
+    setIsModalContratoVisible(false);
+  };
+
+  const showModalContrato = () => {
+    setIsModalContratoVisible(true);
+  };
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -99,15 +115,12 @@ const Page1 = () => {
   };
 
   const handleSave = (data) => {
-    console.log('EN HANDLE SAVE');
-    const indexUpdatedItem = items.indexOf((it) => it.id === data.id);
-    console.log(indexUpdatedItem);
+    const indexUpdatedItem = items.findIndex((it) => it.id === data.id);
     if (indexUpdatedItem >= 0) {
       let newItems = [...items];
       newItems[indexUpdatedItem] = {...data};
       setItems([...newItems]);
     } else {
-      console.log('else handle save');
       setItems((items) => [...items, {...data}]);
     }
   };
@@ -144,6 +157,15 @@ const Page1 = () => {
         <AppRowContainer>
           <Col span={24}>
             <AppCard title={'Articulos de paquete'}>
+              <AppRowContainer>
+                <Col span={24}>
+                  <Descriptions title='' bordered>
+                    <Descriptions.Item label='Monto total ofrecido al cliente'>
+                      {`Q. ${montoTotal}`}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </Col>
+              </AppRowContainer>
               <Text strong>Proyección de pagos: </Text>
               <Row gutter={16}>
                 <Col span={6}>
@@ -237,12 +259,13 @@ const Page1 = () => {
               </AppRowContainer>
               <AppRowContainer justify={'end'}>
                 <Col>
-                  <h3>TOTAL OFRECIDO:</h3>
-                </Col>
-                <Col>
-                  <h2>
-                    {items.reduce((acc, it) => acc + it.montoConcedido, 0)}
-                  </h2>
+                  <Button
+                    type='primary'
+                    size={'large'}
+                    style={{background: '#52C41A'}}
+                    onClick={() => showModalContrato()}>
+                    Realizar contrato
+                  </Button>
                 </Col>
               </AppRowContainer>
             </AppCard>
@@ -261,6 +284,12 @@ const Page1 = () => {
         saveAndClose={saveAndClose}
         formData={item}
         barcode={barcode}
+      />
+      <ModalContrato
+        isVisible={isModalContratoVisible}
+        handleCancel={handleCancelContrato}
+        formData={items}
+        images={formData}
       />
       <Modal
         visible={previewVisible}

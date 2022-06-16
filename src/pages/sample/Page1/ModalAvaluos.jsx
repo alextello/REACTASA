@@ -113,22 +113,6 @@ const ModalAvaluos = ({
         <AppRowContainer>
           <Col span={24}></Col>
         </AppRowContainer>
-        {/*<AppRowContainer gutter={[16, 2]}>*/}
-        {/*  <Col span={24}>*/}
-        {/*    <Form.Item*/}
-        {/*      required*/}
-        {/*      label='Cantidad'*/}
-        {/*      name='cantidad'*/}
-        {/*      rules={[*/}
-        {/*        {*/}
-        {/*          required: true,*/}
-        {/*          message: 'Campo obligatorio',*/}
-        {/*        },*/}
-        {/*      ]}>*/}
-        {/*      <InputNumber min={1} />*/}
-        {/*    </Form.Item>*/}
-        {/*  </Col>*/}
-        {/*</AppRowContainer>*/}
         <AppRowContainer>
           <Col span={8}>
             <Form.Item
