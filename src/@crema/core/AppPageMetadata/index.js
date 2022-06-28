@@ -10,7 +10,7 @@ const SITE_URL =
 
 const FACEBOOK_APP_ID = 'XXXXXXXXX';
 
-const defaultTitle = 'Crema-Ant Design admin Template';
+const defaultTitle = 'SISTEMA ALIANZA';
 const defaultDescription =
   'Crema Ant is an Ant design based admin template. buid with CRA all ant library. ';
 const defaultImage =

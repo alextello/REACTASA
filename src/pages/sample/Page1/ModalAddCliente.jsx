@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
-import {Form, Input, Modal} from 'antd';
+import {Form, Input, InputNumber, Modal, Select} from 'antd';
+import {MaskedInput} from 'antd-mask-input';
 
 const ModalAddCliente = ({isVisible, handleCancel, addCliente}) => {
   const [form] = Form.useForm();
 
   const handleSubmit = () => {
     addCliente(form.getFieldsValue());
+    //alert(JSON.stringify(form.getFieldsValue(), null, 2));
     form.resetFields();
   };
 
@@ -20,7 +22,8 @@ const ModalAddCliente = ({isVisible, handleCancel, addCliente}) => {
       okText={'Guardar'}>
       <Form className='edit-customer-form' name='basic' form={form}>
         <Form.Item
-          name='nombre'
+          label='Nombre completo'
+          name='nombreCompleto'
           rules={[
             {required: true, message: 'Por favor ingrese su nombre completo!'},
           ]}>
@@ -28,20 +31,26 @@ const ModalAddCliente = ({isVisible, handleCancel, addCliente}) => {
         </Form.Item>
 
         <Form.Item
+          label='Edad'
           name='edad'
           rules={[{required: true, message: 'Por favor ingrese su edad!'}]}>
-          <Input placeholder='Edad' />
+          <InputNumber placeholder='Edad' />
         </Form.Item>
 
         <Form.Item
+          label='Estado civil'
           name='estadoCivil'
           rules={[
             {required: true, message: 'Por favor ingrese su estado civil!'},
           ]}>
-          <Input placeholder='Estado Civil' />
+          <Select placeholder='Estado civil'>
+            <Select.Option value='soltero'>Soltero</Select.Option>
+            <Select.Option value='casado'>Casado</Select.Option>
+          </Select>
         </Form.Item>
 
         <Form.Item
+          label='Profesion'
           name='profesion'
           rules={[
             {required: true, message: 'Por favor ingrese su profesión!'},
@@ -50,6 +59,7 @@ const ModalAddCliente = ({isVisible, handleCancel, addCliente}) => {
         </Form.Item>
 
         <Form.Item
+          label='CUI'
           name='cui'
           rules={[
             {
@@ -57,10 +67,15 @@ const ModalAddCliente = ({isVisible, handleCancel, addCliente}) => {
               message: 'Por favor ingrese su Código Único de Identificación!',
             },
           ]}>
-          <Input placeholder='Código ünico de Identificación' />
+          <MaskedInput
+            mask={'0000 00000 0000'}
+            name='cui'
+            placeholder='3333-3333'
+          />
         </Form.Item>
 
         <Form.Item
+          label='Residencia'
           name='residencia'
           rules={[
             {required: true, message: 'Por favor ingrese su residencia!'},
@@ -69,6 +84,7 @@ const ModalAddCliente = ({isVisible, handleCancel, addCliente}) => {
         </Form.Item>
 
         <Form.Item
+          label='Telefono'
           name='telefono'
           rules={[
             {
@@ -76,7 +92,11 @@ const ModalAddCliente = ({isVisible, handleCancel, addCliente}) => {
               message: 'Por favor ingrese su número de teléfono!',
             },
           ]}>
-          <Input.TextArea placeholder='Teléfono' />
+          <MaskedInput
+            mask={'0000 0000'}
+            name='Telefono'
+            placeholder='3333-3333'
+          />
         </Form.Item>
       </Form>
     </Modal>
